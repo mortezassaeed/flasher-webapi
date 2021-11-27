@@ -1,23 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FlasherWebApi.DTO;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace FlasherWebApi.Models
 {
     public class DatabaseContext : DbContext
     {
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+        public DatabaseContext(DbContextOptions options) : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Map table names
+        }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //}
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //}
-        //entities
-
-        public DbSet<PushSubscription> PushSubscription { get; set; }
+        public DbSet<Subscriptor> Subscriptors { get; set; }
+        
     }
 }

@@ -1,5 +1,7 @@
 using FlasherWebApi.Models;
+using FlasherWebApi.Options;
 using FlasherWebApi.Services;
+using FlasherWebApi.Services.Imp;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,13 +16,17 @@ builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllowOrigin", options => options.WithOrigins("http://localhost:3000/"));
 });
-builder.Services.AddDbContext<DatabaseContext>(
-       options => options.UseSqlServer("Server=.;Database=flasher;Trusted_Connection=True;"));
+
+builder.Services.AddDbContext<DatabaseContext>(options =>
+  options.UseSqlite(builder.Configuration.GetConnectionString("flasherDb")));
+//builder.Services.AddDbContext<DatabaseContext>(
+//       options => options.("Server=.;Database=flasher;Trusted_Connection=True;"));
 
 
 builder.Services.Configure<PushNotificationServiceOptions>(builder.Configuration.GetSection("VAPID"));
 
-builder.Services.AddSingleton<IPushNotificationService, WebPushPushNotificationService>();
+builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
+builder.Services.AddTransient<IPushSubscriptionService, PushSubscriptionService>();
 
 var app = builder.Build();
 

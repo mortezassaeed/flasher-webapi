@@ -1,6 +1,5 @@
-﻿using FlasherWebApi.Models;
+﻿using FlasherWebApi.DTO;
 using FlasherWebApi.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlasherWebApi.Controllers
@@ -10,31 +9,28 @@ namespace FlasherWebApi.Controllers
     public class PushNotificationController : ControllerBase
     {
 
-        private readonly IPushNotificationService _notificationService;
+        private readonly IPushSubscriptionService _pushSubscriptionSerivce;
+        private readonly IPushNotificationService _pushNotificationService;
         private static List<PushSubscription> subs = new List<PushSubscription>();
 
 
-        public PushNotificationController(IPushNotificationService notificationService)
+        public PushNotificationController(IPushSubscriptionService pushSubscriptionService, IPushNotificationService pushNotificationService)
         {
-            _notificationService = notificationService;
+            _pushSubscriptionSerivce = pushSubscriptionService;
+            _pushNotificationService = pushNotificationService;
         }
 
         [HttpPost("subscriptions")]
         public async Task<IActionResult> StoreSubscription([FromBody] PushSubscription subscription)
         {
-            subs.Add(subscription);
-            //await _subscriptionStore.StoreSubscriptionAsync(subscription);
-            return NoContent();
+            await _pushSubscriptionSerivce.StoreSubscriptionAsync(subscription);
+            return Ok();
         }
-        [HttpGet("send")]
-        public async Task<IActionResult> Send()
+        [HttpGet("SendAll")]
+        public async Task<IActionResult> SendAll()
         {
-            //await _subscriptionStore.StoreSubscriptionAsync(subscription);
-            foreach (var item in subs)
-            {
-                _notificationService.SendNotification(item, "hiiiii from srver side");
-
-            }
+            await _pushNotificationService.SendNotification("first message from server side");
+         
             return Ok();
         }
 
