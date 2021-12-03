@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿ using Microsoft.AspNetCore.Identity;
 
-namespace FlasherWebApi.Models
+namespace FlasherWebApi.Models;
+
+public class Role : IdentityRole<int>
 {
-    public class Role : IdentityRole<int>
-    {
-    }
 }
+
